@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Blockly Demo: Generating JavaScript</title>
+    <script src="./blockly/blockly_compressed.js"></script>
+    <script src="./blockly/blocks_compressed.js"></script>
+    <script src="./blockly/javascript_compressed.js"></script>
+    <script src="./blockly/msg/js/en.js"></script>
+    <!-- My Custom Block -->
+    <script src="./customblock.js"></script>
+    <style>
+      body {
+        background-color: #fff;
+        font-family: sans-serif;
+      }
+      h1 {
+        font-weight: normal;
+        font-size: 140%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Introduction to Blockly</h1>
+
+    <p>
+      <button onclick="showCode()">Show JavaScript</button>
+      <button onclick="runCode()">Run JavaScript</button>
+    </p>
+
+    <div id="blocklyDiv" style="height: 480px; width: 600px"></div>
+
+    <xml
+      xmlns="https://developers.google.com/blockly/xml"
+      id="toolbox"
+      style="display: none"
+    >
+      <category name="Logic" colour="%{BKY_LOGIC_HUE}">
+        <block type="controls_if"></block>
+        <block type="logic_compare"></block>
+        <block type="logic_operation"></block>
+      </category>
+
+      <category name="Math" colour="%{BKY_MATH_HUE}">
+        <block type="math_number">
+          <field name="NUM">123</field>
+        </block>
+        <block type="math_arithmetic"></block>
+        <block type="math_single"></block>
+      </category>
+      <category name="Text" colour="%{BKY_TEXTS_HUE}">
+        <block type="text"></block>
+        <block type="text_print"></block>
+        <block type="text_prompt_ext">
+          <value name="TEXT">
+            <block type="text"></block>
+          </value>
+        </block>
+        <block type="print_text_result"> </block>
+      </category>
+      <category
+        name="Variables"
+        custom="VARIABLE"
+        colour="%{BKY_VARIABLES_HUE}"
+      >
+        <block type="variables"></block>
+      </category>
+    </xml>
+
+    <script>
+      var demoWorkspace = Blockly.inject("blocklyDiv", {
+        media: "./blockly/media/",
+        toolbox: document.getElementById("toolbox"),
+      });
+      Blockly.Xml.domToWorkspace(
+        document.getElementById("startBlocks"),
+        demoWorkspace
+      );
+
+      function showCode() {
+        // Generate JavaScript code and display it.
+        Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+        var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+        alert(code);
+      }
+
+      function runCode() {
+        // Generate JavaScript code and run it.
+        window.LoopTrap = 1000;
+        Blockly.JavaScript.INFINITE_LOOP_TRAP =
+          'if (--window.LoopTrap === 0) throw "Infinite loop.";\n';
+        var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+        Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+        try {
+          eval(code);
+        } catch (e) {
+          alert(e);
+        }
+      }
+    </script>
+  </body>
+</html>
